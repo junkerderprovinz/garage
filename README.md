@@ -116,7 +116,7 @@ restic -r s3:http://SERVER_IP:3900/my-restic-repo init
 | S3 API Port | (port) | `3900` | The functional endpoint every client connects to. |
 | S3 Website Port | (port) | `3902` | Advanced. Static-site hosting straight from a bucket. |
 | Admin Panel Port | (port) | `3909` | Browser UI: buckets, keys, cluster health. |
-| Data | (path) | `/mnt/user/appdata/garage/data` | Object data + metadata. Must be mapped. |
+| Data | (path) | `/mnt/user/appdata/garage/data` | Object data and metadata. Must be mapped. |
 | Config | (path) | `/mnt/user/appdata/garage/config` | Generated `garage.toml` (RPC secret, admin token). Must be mapped — losing it changes your RPC/admin secrets on next boot. |
 | Access Key | `ACCESS_KEY` | *(empty)* | S3 access key, pre-seeded on first boot. Required to write anything real. |
 | Secret Key | `SECRET_KEY` | *(empty)* | S3 secret key, pre-seeded on first boot. |
