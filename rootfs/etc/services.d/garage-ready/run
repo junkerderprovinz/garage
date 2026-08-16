@@ -1,0 +1,59 @@
+#!/command/with-contenv sh
+# shellcheck shell=sh
+# =============================================================================
+# garage-ready — print a loud "GARAGE IS READY" banner to the container log
+# once both Garage's admin API and garage-webui answer, so the user knows the
+# first start has finished. House standard: every own-image container prints
+# an "<APP> IS READY" log banner as the final block.
+# =============================================================================
+FLAG=/run/garage-ready.printed
+
+# /run is tmpfs (wiped on every container start) -> the banner prints once/start.
+if [ -f "$FLAG" ]; then
+    exec sleep infinity
+fi
+
+ready=0
+i=0
+while [ "$i" -lt 150 ]; do
+    if curl -fsS http://127.0.0.1:3903/health >/dev/null 2>&1; then
+        ready=1
+        break
+    fi
+    i=$((i + 1))
+    sleep 2
+done
+
+webui_ready=0
+j=0
+while [ "$j" -lt 60 ]; do
+    if curl -fsS http://127.0.0.1:3909 >/dev/null 2>&1; then
+        webui_ready=1
+        break
+    fi
+    j=$((j + 1))
+    sleep 1
+done
+
+# House init-log banner as the final block, directly above the READY box.
+/usr/local/bin/print-banner.sh "Garage" "S3-compatible object storage + web admin UI, plug-and-play for Unraid"
+
+SEP=$(printf '%72s' '' | tr ' ' '#')
+echo ""
+echo "$SEP"
+if [ "$ready" -eq 1 ]; then
+    echo "###  GARAGE IS READY  -  S3 API is serving on port 3900  ###"
+    if [ "$webui_ready" -eq 1 ]; then
+        echo "###  WEBUI IS READY   -  admin panel is serving on port 3909  ###"
+    else
+        echo "###  WARNING: WEBUI DID NOT BECOME READY  -  check the log above  ###"
+    fi
+else
+    echo "###  WARNING: GARAGE DID NOT BECOME READY  -  admin API /health never answered within 5 min, check the log above  ###"
+fi
+echo "$SEP"
+echo ""
+
+: > "$FLAG"
+# Longrun: stay up so s6 does not restart us and re-print the banner.
+exec sleep infinity

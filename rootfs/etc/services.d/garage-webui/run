@@ -1,0 +1,39 @@
+#!/command/with-contenv sh
+# shellcheck shell=sh
+# =============================================================================
+# s6 service: garage-webui
+# Starts the garage-webui admin panel once Garage's admin API is reachable.
+#
+# garage-webui needs Garage's [admin] API (admin_token + api_bind_addr) to do
+# anything — bucket/key management, cluster status. Both live in the same
+# generated /config/garage.toml, so the admin_token is read straight from
+# there rather than duplicating secret-generation logic across two services.
+#
+# Condition-based wait (not a fixed sleep): garage-webui would otherwise start
+# before Garage's admin API is up and fail its first health check.
+# =============================================================================
+
+PUID="${PUID:-99}"
+PGID="${PGID:-100}"
+
+ADMIN_TOKEN=$(sed -n 's/^admin_token = "\(.*\)"$/\1/p' /config/garage.toml)
+
+log_info()  { printf '\033[0;32m[garage-webui] INFO:  %s\033[0m\n' "$*"; }
+
+log_info "Waiting for Garage's admin API on 127.0.0.1:3903 ..."
+i=0
+until curl -fsS -o /dev/null "http://127.0.0.1:3903/health" 2>/dev/null; do
+    i=$((i + 1))
+    if [ "$i" -ge 60 ]; then
+        echo "[garage-webui] FATAL: Garage admin API never came up after 60s" >&2
+        exit 1
+    fi
+    sleep 1
+done
+log_info "Garage admin API is up, starting webui"
+
+export API_BASE_URL="http://127.0.0.1:3903"
+export API_ADMIN_KEY="${ADMIN_TOKEN}"
+export PORT="3909"
+
+exec gosu "${PUID}:${PGID}" /usr/local/bin/garage-webui

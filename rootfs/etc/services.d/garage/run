@@ -1,0 +1,33 @@
+#!/command/with-contenv sh
+# shellcheck shell=sh
+# =============================================================================
+# s6 service: garage
+# Starts the Garage S3 object store, single-node mode.
+#
+# --single-node (Garage v2.3.0+) auto-creates the cluster layout at startup —
+# no manual `garage layout assign` / `garage layout apply` CLI step needed.
+# --default-access-key / --default-bucket (same release) pre-seed an S3 key
+# and bucket from GARAGE_DEFAULT_ACCESS_KEY / _SECRET_KEY / GARAGE_DEFAULT_BUCKET,
+# so a fresh install is immediately usable with the credentials set in the
+# Unraid template — no exec-in-container CLI step for that either.
+#
+# s6-overlay v3 convention: no backgrounding, use exec so s6 receives signals
+# directly.
+# =============================================================================
+
+PUID="${PUID:-99}"
+PGID="${PGID:-100}"
+
+export GARAGE_DEFAULT_ACCESS_KEY="${ACCESS_KEY:-}"
+export GARAGE_DEFAULT_SECRET_KEY="${SECRET_KEY:-}"
+export GARAGE_DEFAULT_BUCKET="${BUCKET:-}"
+
+ARGS="server --single-node"
+[ -n "$GARAGE_DEFAULT_ACCESS_KEY" ] && [ -n "$GARAGE_DEFAULT_SECRET_KEY" ] && ARGS="$ARGS --default-access-key"
+[ -n "$GARAGE_DEFAULT_BUCKET" ] && ARGS="$ARGS --default-bucket"
+
+cd /data || { echo "[garage] FATAL: cannot cd into /data" >&2; exit 1; }
+
+# shellcheck disable=SC2086
+exec gosu "${PUID}:${PGID}" \
+    /usr/local/bin/garage -c /config/garage.toml $ARGS
