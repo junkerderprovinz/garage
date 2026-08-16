@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<!--
+  Unraid Community Applications support thread for Garage.
+  Structure mirrors the sister-app threads (e.g. Matrix, featherdrop):
+  title -> subtitle -> banner -> buttons -> What is this? -> Highlights ->
+  Requirements -> Posting a bug report -> Credits -> disclaimer.
+  Open standalone in a browser, or paste into the Unraid forum editor's source.
+  Title: [Support] junkerderprovinz - garage
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[Support] junkerderprovinz - garage</title>
+<style>
+  body { max-width: 900px; margin: 1.5rem auto; padding: 0 1rem;
+         font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+         line-height: 1.6; color: #1c1c1c; }
+  h1 { text-align: center; font-size: 1.7rem; margin-bottom: .2rem; }
+  .subtitle { text-align: center; color: #666; font-style: italic; margin-top: 0; }
+  h2 { margin-top: 1.9rem; font-size: 1.25rem; }
+  code { background: #f1f1f1; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+  a { color: #e8873a; }
+  ul { padding-left: 1.2rem; }
+  li { margin: .25rem 0; }
+  img { border: 0; vertical-align: middle; }
+  hr { border: 0; border-top: 1px solid #ddd; margin: 2rem 0; }
+  .footnote { color: #777; font-size: .9em; font-style: italic; text-align: center; margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<h1>Garage – S3-compatible object storage plus its web admin panel, one container</h1>
+<p class="subtitle">Object storage with its own garage door opener.</p>
+
+<p align="center">
+  <a href="https://github.com/junkerderprovinz/garage">
+    <img src="https://raw.githubusercontent.com/junkerderprovinz/garage/main/.github/assets/banner.png" alt="Garage" width="100%">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://unraid.net/community/apps?q=garage"><img src="https://raw.githubusercontent.com/junkerderprovinz/garage/main/.github/assets/support-buttons/install-on-unraid.svg" alt="Install on Unraid" width="240"></a>
+  &nbsp;
+  <a href="https://github.com/junkerderprovinz/garage"><img src="https://raw.githubusercontent.com/junkerderprovinz/garage/main/.github/assets/support-buttons/view-on-github.svg" alt="View on GitHub" width="240"></a>
+  &nbsp;
+  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/garage/main/.github/assets/support-buttons/buy-me-a-coffee.svg" alt="Buy me a coffee" width="240"></a>
+</p>
+
+<h2>What is this?</h2>
+<p><a href="https://git.deuxfleurs.fr/Deuxfleurs/garage">Garage</a> is a lightweight,
+S3-API-compatible object store built for small, self-hosted deployments (Rust,
+Apache-2.0, actively developed). Garage's own Community Applications listings are
+split across three separate templates from another maintainer — the core server in
+two network variants, plus the admin panel as its own install. This template bundles
+the core server <strong>and</strong> <a href="https://github.com/khairul169/garage-webui">garage-webui</a>
+(its web admin panel) into <strong>one container</strong> — both official, unmodified
+upstream binaries, wired together with s6-overlay. Zero manual CLI setup: the
+single-node cluster layout, an S3 access key, secret key and bucket are all created
+automatically on first boot.</p>
+
+<h2>Highlights</h2>
+<ul>
+  <li><strong>One container instead of three</strong> — core server + admin panel, no separate installs to keep in sync</li>
+  <li><strong>Zero-CLI first boot</strong> — single-node layout auto-created (Garage's own <code>--single-node</code>, v2.3.0+); an S3 access key, secret key and bucket are pre-seeded from the template fields, no <code>garage layout assign</code> / <code>garage key create</code> / <code>garage bucket create</code> needed</li>
+  <li><strong>garage-webui built in</strong> — buckets, keys and cluster health are all browsable, no terminal needed</li>
+  <li><strong>Official, unmodified binaries</strong> — both Garage and garage-webui are pulled straight from their upstream images, not rebuilt or patched</li>
+  <li>Only the S3 API (3900), S3 website (3902, optional) and admin panel (3909) are published — the internal RPC and admin-API ports stay off the network</li>
+  <li>Multi-arch — amd64 + arm64</li>
+  <li>Image: <code>ghcr.io/junkerderprovinz/garage:latest</code> (also mirrored to Docker Hub)</li>
+</ul>
+
+<h2>Requirements</h2>
+<ul>
+  <li>Unraid 6.10+</li>
+  <li>Map <strong>both</strong> the Data and Config volumes — Config holds the generated <code>garage.toml</code> (RPC secret, admin token). Losing it regenerates those secrets on next boot and breaks the admin panel's session.</li>
+  <li>Set an <strong>Access Key</strong> and <strong>Secret Key</strong> in the template before storing anything real</li>
+</ul>
+
+<h2>Posting a bug report</h2>
+<p>Please post:</p>
+<ul>
+  <li>Unraid version (Settings → System Information)</li>
+  <li>Image tag (<code>latest</code> or a pinned <code>vX.Y.Z</code>)</li>
+  <li>Output of <code>docker logs --tail 200 garage</code></li>
+  <li>Whether you changed the DB Engine (sqlite/lmdb), or the <code>/data</code> / <code>/config</code> mounts</li>
+</ul>
+<p>GitHub issues with the same info are also welcome:
+<a href="https://github.com/junkerderprovinz/garage/issues">github.com/junkerderprovinz/garage/issues</a></p>
+
+<h2>Credits</h2>
+<p>All credit for the actual object store goes to the
+<a href="https://git.deuxfleurs.fr/Deuxfleurs/garage">Garage</a> team at Deuxfleurs, and
+for the admin panel to <a href="https://github.com/khairul169/garage-webui">khairul169</a>.
+This template only bundles and wires the two together for Unraid. If it saves you the
+three-template juggling act, you can
+<a href="https://buymeacoffee.com/junkerderprovinz">buy me a coffee</a>.</p>
+
+<hr>
+
+<p class="footnote">Self-hosted, AGPL-3.0-licensed — you run it, you own your data and the responsibility.</p>
+
+</body>
+</html>
