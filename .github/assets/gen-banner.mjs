@@ -24,15 +24,15 @@ async function font(file, url) {
   const b = readFileSync(p);
   return opentype.parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength));
 }
+const bree = await font("jdp-BreeSerif-Regular.ttf", "https://github.com/google/fonts/raw/main/ofl/breeserif/BreeSerif-Regular.ttf");
 const lato = await font("jdp-Lato-Regular.ttf", "https://github.com/google/fonts/raw/main/ofl/lato/Lato-Regular.ttf");
 const bbox = (svg) => new Resvg(svg, { fitTo: { mode: "original" } }).getBBox();
 
-// The official Garage logo (garagehq.deuxfleurs.fr) is a mark+wordmark lockup
-// (crate icon above the "Garage" wordmark, both baked into icon.svg's paths) —
-// so unlike the other repos' banners, no separate headline text is drawn here.
-// Only the claim runs alongside it.
-const W = 1600, H = 500, LOGO_INK = 380, LOGO_X = 220, GAP_LOGO_TEXT = 90, CLAIM_CAP = 44, RIGHT_PAD = 120;
-const CLAIM = "Object storage with its own garage door opener.";
+// icon.svg is the official Garage crate mark ONLY (the wordmark letters were
+// stripped from garagehq.deuxfleurs.fr's source lockup) -- the "Garage" name
+// is typeset here instead, same as every other repo's banner.
+const W = 1600, H = 500, LOGO_INK = 400, LOGO_X = 165, GAP_LOGO_TEXT = 70, GAP_NAME_CLAIM = 16, CLAIM_CAP = 44, RIGHT_PAD = 120;
+const NAME = "Garage", CLAIM = "Object storage with its own garage door opener.";
 
 const iconSrc = readFileSync(join(HERE, "icon.svg"), "utf8");
 const iconInner = iconSrc.replace(/^[\s\S]*?<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "");
@@ -43,16 +43,25 @@ const sM = LOGO_INK / Math.max(mb.width, mb.height);
 const markW = mb.width * sM, markH = mb.height * sM;
 const markTX = LOGO_X - mb.x * sM, markTY = H / 2 - markH / 2 - mb.y * sM;
 const textX = LOGO_X + markW + GAP_LOGO_TEXT;
-const maxClaimW = W - textX - RIGHT_PAD;
+const maxNameW = W - textX - RIGHT_PAD;
+
+let ns = 110 / (bbox(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400"><path d="${bree.getPath("G", 0, 300, 200).toPathData(2)}" fill="#000"/></svg>`).height / 200);
+const adv = bree.getAdvanceWidth(NAME, ns);
+if (adv > maxNameW) ns = ns * maxNameW / adv;
+const nameD = bree.getPath(NAME, 0, 0, ns).toPathData(2);
+const nb = bbox(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5000 800"><path d="${bree.getPath(NAME, 0, 500, ns).toPathData(2)}" fill="#000"/></svg>`);
+const nameH = nb.height, nameInkTop = nb.y - 500;
 
 function fitClaim(text, maxW, cap) {
   let size = Math.min(cap, Math.floor((100 * maxW) / lato.getAdvanceWidth(text, 100)));
   for (; size > 10; size--) if (!lato.getPath(text, 0, 0, size).toPathData(2).includes("NaN")) return size;
   return 10;
 }
-const claimSize = fitClaim(CLAIM, maxClaimW, CLAIM_CAP);
+const claimSize = fitClaim(CLAIM, maxNameW, CLAIM_CAP);
 const claimAsc = lato.ascender * (claimSize / lato.unitsPerEm), claimDesc = -lato.descender * (claimSize / lato.unitsPerEm);
-const claimBaseline = Math.round(H / 2 + (claimAsc - claimDesc) / 2);
+const groupH = nameH + GAP_NAME_CLAIM + claimAsc + claimDesc;
+const top = H / 2 - groupH / 2;
+const claimBaseline = Math.round(top + nameH + GAP_NAME_CLAIM + claimAsc);
 const claimD = lato.getPath(CLAIM, 0, 0, claimSize).toPathData(2);
 
 const THEMES = [
@@ -64,6 +73,7 @@ for (const t of THEMES) {
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="garage">
   <rect width="${W}" height="${H}" fill="${t.bg}"/>
   <g transform="translate(${markTX.toFixed(2)},${markTY.toFixed(2)}) scale(${sM.toFixed(5)})">${iconInner}</g>
+  <g transform="translate(${textX.toFixed(2)},${(top - nameInkTop).toFixed(2)})"><path d="${nameD}" fill="${t.name}"/></g>
   <g transform="translate(${textX.toFixed(2)},${claimBaseline})"><path d="${claimD}" fill="${t.claim}"/></g>
 </svg>
 `;
