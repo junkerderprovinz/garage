@@ -44,6 +44,7 @@ LABEL org.opencontainers.image.title="Garage" \
       org.opencontainers.image.vendor="junkerderprovinz" \
       maintainer="junkerderprovinz"
 
+# hadolint ignore=DL3002
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
