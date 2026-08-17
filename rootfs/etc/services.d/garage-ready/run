@@ -38,20 +38,32 @@ done
 # House init-log banner as the final block, directly above the READY box.
 /usr/local/bin/print-banner.sh "Garage" "S3-compatible object storage + web admin UI, plug-and-play for Unraid"
 
-SEP=$(printf '%72s' '' | tr ' ' '#')
-echo ""
-echo "$SEP"
+# Colored via plain ANSI SGR codes, not tput (tput needs a terminfo database
+# that may not exist in a minimal container): 32 green / 33 yellow / 31 red,
+# 0 reset. docker logs passes stdout bytes through untouched, so any
+# ANSI-aware viewer (a real terminal, Unraid's log panel) renders the color;
+# a viewer that does not understand SGR codes just shows them as inert text.
+# printf '%b', not "echo -e": this script is POSIX sh, where -e is not
+# portable.
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+# Clean one-line-per-service status (house look: no rule/box walls, label +
+# detail on the same line). print-banner.sh already left one blank line
+# above this. The S3 API and the web admin UI are two separate services, so
+# up to two status lines can appear -- each still fully combined to one line.
 if [ "$ready" -eq 1 ]; then
-    echo "###  GARAGE IS READY  -  S3 API is serving on port 3900  ###"
+    printf '%b\n' "  ${GREEN}✓ GARAGE IS READY${NC} - S3 API is serving on port 3900"
     if [ "$webui_ready" -eq 1 ]; then
-        echo "###  WEBUI IS READY   -  admin panel is serving on port 3909  ###"
+        printf '%b\n' "  ${GREEN}✓ WEBUI IS READY${NC} - admin panel is serving on port 3909"
     else
-        echo "###  WARNING: WEBUI DID NOT BECOME READY  -  check the log above  ###"
+        printf '%b\n' "  ${YELLOW}! WEBUI DID NOT BECOME READY${NC} - check the log above"
     fi
 else
-    echo "###  WARNING: GARAGE DID NOT BECOME READY  -  admin API /health never answered within 5 min, check the log above  ###"
+    printf '%b\n' "  ${RED}✗ GARAGE DID NOT BECOME READY${NC} - admin API /health never answered within 5 min, check the log above"
 fi
-echo "$SEP"
 echo ""
 
 : > "$FLAG"
