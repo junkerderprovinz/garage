@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.26
+# syntax=docker/dockerfile:1.26@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
 # =============================================================================
 # Garage — Garage S3 object store + garage-webui admin panel, one container
 #
@@ -11,8 +11,8 @@
 # License: AGPL-3.0-only
 # =============================================================================
 
-ARG GARAGE_VERSION=v2.3.0
-ARG WEBUI_VERSION=latest
+ARG GARAGE_VERSION=v2.3.0@sha256:866bd13ed2038ba7e7190e840482bc27234c4afaf77be8cfa439ae088c1e4690
+ARG WEBUI_VERSION=latest@sha256:17c793551873155065bf9a022dabcde874de808a1f26e648d4b82e168806439c
 ARG S6_OVERLAY_VERSION=3.2.0.2
 
 # -----------------------------------------------------------------------------
@@ -30,7 +30,7 @@ FROM khairul169/garage-webui:${WEBUI_VERSION} AS webui
 # -----------------------------------------------------------------------------
 # Stage 3 — final image
 # -----------------------------------------------------------------------------
-FROM debian:bookworm-slim
+FROM debian:bookworm-slim@sha256:88200866dfff7ea7f5cbcb6ec7c8a701889efe6fe859fe64d6990e4b07ea4171
 
 ARG S6_OVERLAY_VERSION
 ARG TARGETARCH
