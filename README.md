@@ -19,6 +19,10 @@ manual CLI setup: single-node layout, S3 key and bucket are all created
 automatically on first boot.
 </p>
 
+<p align="center">
+One knight's job: I build it, keep it running, work through the issues and add what people ask for, until nothing is missing. No accounts, no telemetry, no ads. No trial, no tier, no asterisk. Nothing readable ever leaves your own walls.
+</p>
+
 <br>
 
 <p align="center">
@@ -145,7 +149,7 @@ multi-node cluster, not this single-node setup) cluster membership.
 
 Questions, bugs, ideas? **[GitHub issues →](https://github.com/junkerderprovinz/garage/issues)**.
 
-If this template saves you a setup hassle, consider buying me a coffee:
+If it has earned a place on your computer or server, a donation covers what it costs: the domain, the server, and the evenings that go into it. It also makes this knight's heart beat a little faster. Three ways below, whichever suits you.
 
 <p align="center">
   <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/button-buy-me-a-coffee-live.svg" alt="Buy me a coffee" width="160"></a>
