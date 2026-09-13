@@ -11,7 +11,7 @@
 # License: AGPL-3.0-only
 # =============================================================================
 
-ARG GARAGE_VERSION=v2.4.0@sha256:715d176efc35384bf72cf6052fd61b74b3e27a1e31a9dfedabe646bd1e92f137
+ARG GARAGE_VERSION=v2.4.1@sha256:9c96caa2612d3411acc5b0e6701fb238dbfba33e533a6d7d3d811a4b12d0d020
 ARG WEBUI_VERSION=latest@sha256:17c793551873155065bf9a022dabcde874de808a1f26e648d4b82e168806439c
 ARG S6_OVERLAY_VERSION=3.2.0.2
 
