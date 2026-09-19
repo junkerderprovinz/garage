@@ -1,19 +1,14 @@
 #!/command/with-contenv sh
 # shellcheck shell=sh
-# =============================================================================
-# s6 service: garage
-# Starts the Garage S3 object store, single-node mode.
+# s6 service: the Garage S3 object store in single-node mode.
 #
-# --single-node (Garage v2.3.0+) auto-creates the cluster layout at startup —
-# no manual `garage layout assign` / `garage layout apply` CLI step needed.
-# --default-access-key / --default-bucket (same release) pre-seed an S3 key
-# and bucket from GARAGE_DEFAULT_ACCESS_KEY / _SECRET_KEY / GARAGE_DEFAULT_BUCKET,
-# so a fresh install is immediately usable with the credentials set in the
-# Unraid template — no exec-in-container CLI step for that either.
+# --single-node (Garage v2.3.0+) creates the cluster layout at startup, so no
+# `garage layout assign` / `garage layout apply` step is needed.
+# --default-access-key and --default-bucket (same release) pre-seed an S3 key and
+# bucket from GARAGE_DEFAULT_ACCESS_KEY, _SECRET_KEY and GARAGE_DEFAULT_BUCKET, so
+# a fresh install works with the credentials set in the Unraid template.
 #
-# s6-overlay v3 convention: no backgrounding, use exec so s6 receives signals
-# directly.
-# =============================================================================
+# exec rather than backgrounding, so s6 receives signals directly.
 
 PUID="${PUID:-99}"
 PGID="${PGID:-100}"

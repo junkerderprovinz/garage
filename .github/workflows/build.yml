@@ -1,15 +1,11 @@
-# =============================================================================
-# build.yml — Garage Docker Image Build & Push
-#
-# Triggers: push to main, workflow_dispatch. Output: multi-arch image
-# (linux/amd64, linux/arm64) pushed to ghcr.io/junkerderprovinz/garage — and,
-# once DOCKERHUB_USERNAME (variable) + DOCKERHUB_TOKEN (secret) are set
-# together, mirrored to docker.io/<DOCKERHUB_USERNAME>/garage — tagged
-# :latest and the pinned GARAGE_VERSION Dockerfile ARG.
+# Builds the multi-arch Garage image (linux/amd64, linux/arm64) on push to main
+# and on demand, and pushes it to ghcr.io/junkerderprovinz/garage tagged :latest
+# and with the pinned GARAGE_VERSION. Once DOCKERHUB_USERNAME (variable) and
+# DOCKERHUB_TOKEN (secret) are both set, it is mirrored to
+# docker.io/<DOCKERHUB_USERNAME>/garage.
 #
 # Component versions (Garage, garage-webui, s6-overlay) are pinned in the
-# Dockerfile ARGs, tracked by Renovate — not resolved dynamically here.
-# =============================================================================
+# Dockerfile ARGs and tracked by Renovate.
 
 name: Build & Push Docker Image
 
@@ -66,7 +62,7 @@ jobs:
           elif [ "${FORCE}" = "true" ]; then
             SKIP="false"
           elif docker manifest inspect "${IMAGE}" > /dev/null 2>&1; then
-            echo "Image ${IMAGE} already exists — skipping build."
+            echo "Image ${IMAGE} already exists, skipping build."
             SKIP="true"
           fi
           echo "skip=${SKIP}" >> "${GITHUB_OUTPUT}"
@@ -116,12 +112,9 @@ jobs:
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
-      # ---------------------------------------------------------------------
-      # Smoke-test gate (amd64): boot the built image and require Garage's
-      # admin API /health AND garage-webui to answer before anything is
-      # pushed. A green Docker build only proves the image *builds* — this
-      # proves both s6 services actually come up.
-      # ---------------------------------------------------------------------
+      # Smoke-test gate (amd64): boot the built image and require Garage's admin
+      # API /health and garage-webui to answer before anything is pushed. A green
+      # Docker build only proves the image builds, not that both s6 services start.
       - name: Build amd64 image for smoke test
         if: steps.check.outputs.skip != 'true'
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
@@ -133,7 +126,7 @@ jobs:
           tags: garage:smoke-amd64
           cache-from: type=gha
 
-      - name: Smoke test — admin API and webui must come up
+      - name: "Smoke test: admin API and webui must come up"
         if: steps.check.outputs.skip != 'true'
         run: |
           set -euo pipefail

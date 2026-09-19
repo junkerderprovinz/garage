@@ -1,35 +1,27 @@
 # syntax=docker/dockerfile:1.27@sha256:bde3983e9c939224420ddaf6b784cc30e09b035a4dea01f581230c50809f372e
-# =============================================================================
-# Garage — Garage S3 object store + garage-webui admin panel, one container
+# Garage: the Garage S3 object store and the garage-webui admin panel in one
+# container.
 #
-# Both upstream projects publish `scratch`-based images (a single static
-# binary each, no shared libs) — pulled in via multi-stage COPY --from, no
-# rebuild-from-source needed. s6-overlay supervises both processes.
+# Both upstream projects publish `scratch`-based images with a single static
+# binary each, pulled in with multi-stage COPY --from, so nothing is rebuilt
+# from source. s6-overlay supervises both processes.
 #
 # GitHub:  https://github.com/junkerderprovinz/garage
 # Image:   ghcr.io/junkerderprovinz/garage
 # License: AGPL-3.0-only
-# =============================================================================
 
 ARG GARAGE_VERSION=v2.4.1@sha256:9c96caa2612d3411acc5b0e6701fb238dbfba33e533a6d7d3d811a4b12d0d020
 ARG WEBUI_VERSION=latest@sha256:17c793551873155065bf9a022dabcde874de808a1f26e648d4b82e168806439c
 ARG S6_OVERLAY_VERSION=3.2.0.2
 
-# -----------------------------------------------------------------------------
-# Stage 1 — the official Garage binary (Deuxfleurs, Rust, scratch-based)
-# -----------------------------------------------------------------------------
+# The official Garage binary (Deuxfleurs, Rust, scratch-based).
 ARG GARAGE_VERSION
 FROM dxflrs/garage:${GARAGE_VERSION} AS garage
 
-# -----------------------------------------------------------------------------
-# Stage 2 — the official garage-webui binary (khairul169, Go, scratch-based)
-# -----------------------------------------------------------------------------
+# The official garage-webui binary (khairul169, Go, scratch-based).
 ARG WEBUI_VERSION
 FROM khairul169/garage-webui:${WEBUI_VERSION} AS webui
 
-# -----------------------------------------------------------------------------
-# Stage 3 — final image
-# -----------------------------------------------------------------------------
 FROM debian:bookworm-slim@sha256:88200866dfff7ea7f5cbcb6ec7c8a701889efe6fe859fe64d6990e4b07ea4171
 
 ARG S6_OVERLAY_VERSION
@@ -63,7 +55,7 @@ RUN apt-get update \
         xz-utils \
     && rm -rf /var/lib/apt/lists/*
 
-# Install s6-overlay v3 (init system + process supervisor).
+# s6-overlay v3, the init system and process supervisor.
 RUN case "${TARGETARCH}" in \
         amd64)  S6_ARCH="x86_64"   ;; \
         arm64)  S6_ARCH="aarch64"  ;; \
@@ -83,9 +75,9 @@ RUN chmod +x /usr/local/bin/garage /usr/local/bin/garage-webui \
     && /usr/local/bin/garage --version \
     && mkdir -p /data /config
 
-# Init-log banner: single source at .github/assets/banner-raw.txt (the shared
-# Junker-der-Provinz banner; CR stripped so the log shows it cleanly). Printed
-# by print-banner.sh from the garage-ready service, as the last log block.
+# The shared init-log banner from .github/assets/banner-raw.txt, with CRs
+# stripped so the log shows it cleanly. print-banner.sh prints it from the
+# garage-ready service as the last log block.
 COPY .github/assets/banner-raw.txt /usr/local/share/banner-raw.txt
 RUN tr -d '\r' < /usr/local/share/banner-raw.txt > /usr/local/share/banner.txt
 

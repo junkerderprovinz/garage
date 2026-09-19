@@ -1,17 +1,14 @@
 #!/command/with-contenv sh
 # shellcheck shell=sh
-# =============================================================================
-# s6 service: garage-webui
-# Starts the garage-webui admin panel once Garage's admin API is reachable.
+# s6 service: the garage-webui admin panel, started once Garage's admin API is
+# reachable.
 #
-# garage-webui needs Garage's [admin] API (admin_token + api_bind_addr) to do
-# anything — bucket/key management, cluster status. Both live in the same
-# generated /config/garage.toml, so the admin_token is read straight from
-# there rather than duplicating secret-generation logic across two services.
+# garage-webui needs Garage's [admin] API (admin_token and api_bind_addr) for
+# bucket and key management and cluster status. The admin_token is read from the
+# generated /config/garage.toml, so secrets are generated in one place.
 #
-# Condition-based wait (not a fixed sleep): garage-webui would otherwise start
-# before Garage's admin API is up and fail its first health check.
-# =============================================================================
+# It waits for the admin API rather than a fixed time; otherwise garage-webui
+# starts first and fails its first health check.
 
 PUID="${PUID:-99}"
 PGID="${PGID:-100}"

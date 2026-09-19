@@ -1,8 +1,6 @@
 /**
- * Standalone banner generator for the garage repo (not part of the shared
- * unraid-apps wrapper-banner generator, since this is its own repo).
- * Same technique as the house style: text rendered at local origin, then
- * positioned via <g transform> to avoid opentype.js NaN at large absolute X.
+ * Generates the garage README banners. Text is drawn at the origin and moved into
+ * place with <g transform>, because opentype.js emits NaN at large absolute x.
  * Run: node .github/assets/gen-banner.mjs
  */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
@@ -28,9 +26,9 @@ const bree = await font("jdp-BreeSerif-Regular.ttf", "https://github.com/google/
 const lato = await font("jdp-Lato-Regular.ttf", "https://github.com/google/fonts/raw/main/ofl/lato/Lato-Regular.ttf");
 const bbox = (svg) => new Resvg(svg, { fitTo: { mode: "original" } }).getBBox();
 
-// icon.svg is the official Garage crate mark ONLY (the wordmark letters were
-// stripped from garagehq.deuxfleurs.fr's source lockup) -- the "Garage" name
-// is typeset here instead, same as every other repo's banner.
+// icon.svg is the official Garage crate mark alone, with the wordmark letters
+// stripped from garagehq.deuxfleurs.fr's lockup, so the name is typeset here as
+// on every other repo's banner.
 const W = 1600, H = 500, LOGO_INK = 400, LOGO_X = 165, GAP_LOGO_TEXT = 70, GAP_NAME_CLAIM = 16, CLAIM_CAP = 44, RIGHT_PAD = 120;
 const NAME = "Garage", CLAIM = "Object storage with its own garage door opener.";
 
@@ -45,9 +43,8 @@ const markTX = LOGO_X - mb.x * sM, markTY = H / 2 - markH / 2 - mb.y * sM;
 const textX = LOGO_X + markW + GAP_LOGO_TEXT;
 const maxNameW = W - textX - RIGHT_PAD;
 
-// Versalhoehe an H gemessen, nicht an G: das G ueberschwingt oben und unten,
-// wodurch der Name 3,6 Prozent kleiner gesetzt wuerde als in den Bannern, die
-// der gemeinsame Wrapper-Generator baut. Beide messen jetzt dasselbe.
+// Cap height measured on H rather than G: G overshoots at top and bottom, which
+// would set the name smaller than on the banners of the shared wrapper generator.
 let ns = 110 / (bbox(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400"><path d="${bree.getPath("H", 0, 300, 200).toPathData(2)}" fill="#000"/></svg>`).height / 200);
 const adv = bree.getAdvanceWidth(NAME, ns);
 if (adv > maxNameW) ns = ns * maxNameW / adv;
