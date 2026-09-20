@@ -30,7 +30,7 @@
 </head>
 <body>
 
-<h1>Garage – S3-compatible object storage plus its web admin panel, one container</h1>
+<h1>Garage: S3-compatible object storage plus its web admin panel, one container</h1>
 <p class="subtitle">Object storage with its own garage door opener.</p>
 
 <p align="center">
@@ -51,29 +51,29 @@
 <p><a href="https://git.deuxfleurs.fr/Deuxfleurs/garage">Garage</a> is a lightweight,
 S3-API-compatible object store built for small, self-hosted deployments (Rust,
 Apache-2.0, actively developed). Garage's own Community Applications listings are
-split across three separate templates from another maintainer — the core server in
+split across three separate templates from another maintainer: the core server in
 two network variants, plus the admin panel as its own install. This template bundles
 the core server <strong>and</strong> <a href="https://github.com/khairul169/garage-webui">garage-webui</a>
-(its web admin panel) into <strong>one container</strong> — both official, unmodified
+(its web admin panel) into <strong>one container</strong>, both official, unmodified
 upstream binaries, wired together with s6-overlay. Zero manual CLI setup: the
 single-node cluster layout, an S3 access key, secret key and bucket are all created
 automatically on first boot.</p>
 
 <h2>Highlights</h2>
 <ul>
-  <li><strong>One container instead of three</strong> — core server + admin panel, no separate installs to keep in sync</li>
-  <li><strong>Zero-CLI first boot</strong> — single-node layout auto-created (Garage's own <code>--single-node</code>, v2.3.0+); an S3 access key, secret key and bucket are pre-seeded from the template fields, no <code>garage layout assign</code> / <code>garage key create</code> / <code>garage bucket create</code> needed</li>
-  <li><strong>garage-webui built in</strong> — buckets, keys and cluster health are all browsable, no terminal needed</li>
-  <li><strong>Official, unmodified binaries</strong> — both Garage and garage-webui are pulled straight from their upstream images, not rebuilt or patched</li>
-  <li>Only the S3 API (3900), S3 website (3902, optional) and admin panel (3909) are published — the internal RPC and admin-API ports stay off the network</li>
-  <li>Multi-arch — amd64 + arm64</li>
+  <li><strong>One container instead of three</strong>: core server + admin panel, no separate installs to keep in sync</li>
+  <li><strong>Zero-CLI first boot</strong>: single-node layout auto-created (Garage's own <code>--single-node</code>, v2.3.0+); an S3 access key, secret key and bucket are pre-seeded from the template fields, no <code>garage layout assign</code> / <code>garage key create</code> / <code>garage bucket create</code> needed</li>
+  <li><strong>garage-webui built in</strong>: buckets, keys and cluster health are all browsable, no terminal needed</li>
+  <li><strong>Official, unmodified binaries</strong>: both Garage and garage-webui are pulled straight from their upstream images, not rebuilt or patched</li>
+  <li>Only the S3 API (3900), S3 website (3902, optional) and admin panel (3909) are published; the internal RPC and admin-API ports stay off the network</li>
+  <li>Multi-arch: amd64 + arm64</li>
   <li>Image: <code>ghcr.io/junkerderprovinz/garage:latest</code> (also mirrored to Docker Hub)</li>
 </ul>
 
 <h2>Requirements</h2>
 <ul>
   <li>Unraid 6.10+</li>
-  <li>Map <strong>both</strong> the Data and Config volumes — Config holds the generated <code>garage.toml</code> (RPC secret, admin token). Losing it regenerates those secrets on next boot and breaks the admin panel's session.</li>
+  <li>Map <strong>both</strong> the Data and Config volumes. Config holds the generated <code>garage.toml</code> (RPC secret, admin token). Losing it regenerates those secrets on next boot and breaks the admin panel's session.</li>
   <li>Set an <strong>Access Key</strong> and <strong>Secret Key</strong> in the template before storing anything real</li>
 </ul>
 
@@ -98,7 +98,7 @@ three-template juggling act, you can
 
 <hr>
 
-<p class="footnote">Self-hosted, AGPL-3.0-licensed — you run it, you own your data and the responsibility.</p>
+<p class="footnote">Self-hosted, AGPL-3.0-licensed. You run it, you own your data and the responsibility.</p>
 
 </body>
 </html>
