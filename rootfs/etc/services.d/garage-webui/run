@@ -7,6 +7,9 @@
 # bucket and key management and cluster status. The admin_token is read from the
 # generated /config/garage.toml, so secrets are generated in one place.
 #
+# The object browser talks S3 directly. Without CONFIG_PATH the webui looks for
+# /etc/garage.toml, finds nothing and builds its S3 URL as "http://:".
+#
 # It waits for the admin API rather than a fixed time; otherwise garage-webui
 # starts first and fails its first health check.
 
@@ -31,6 +34,8 @@ log_info "Garage admin API is up, starting webui"
 
 export API_BASE_URL="http://127.0.0.1:3903"
 export API_ADMIN_KEY="${ADMIN_TOKEN}"
+export CONFIG_PATH="/config/garage.toml"
+export S3_ENDPOINT_URL="http://127.0.0.1:3900"
 export PORT="3909"
 
 exec gosu "${PUID}:${PGID}" /usr/local/bin/garage-webui
