@@ -126,7 +126,7 @@ jobs:
           tags: garage:smoke-amd64
           cache-from: type=gha
 
-      - name: "Smoke test: admin API and webui must come up"
+      - name: "Smoke test: admin API, webui and bucket browsing must work"
         if: steps.check.outputs.skip != 'true'
         run: |
           set -euo pipefail
@@ -148,6 +148,9 @@ jobs:
             sleep 2
           done
           [ -n "$ok" ] || { echo "::error::garage-webui never became healthy"; exit 1; }
+          # Bucket browsing is the one webui path that talks S3 instead of the admin API.
+          curl -fsS --max-time 30 http://127.0.0.1:3909/api/browse/smoke \
+            || { echo "::error::garage-webui cannot browse the default bucket"; exit 1; }
           echo "Smoke test passed."
 
       - name: Build and push multi-arch image
