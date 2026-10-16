@@ -114,6 +114,14 @@ region = garage
 
 Back up `/config` and `/data` together. Losing `/config` keeps your objects but generates a new admin token and RPC secret on the next start.
 
+### Other Docker hosts
+
+[compose.yaml](compose.yaml) runs Garage on any Linux server with Docker. Put it in a folder of its own and start it with `docker compose up -d`. The folders are created next to the file.
+
+- **Synology:** in Container Manager, create a project from the file (DSM 7.2 or newer).
+- **Proxmox:** run it in a VM or an LXC container that has Docker.
+- **MOS:** install Garage from the [MOS Hub](https://mos-official.net/apps.html?search=Garage).
+
 <br>
 
 ## 4. How AI is used here

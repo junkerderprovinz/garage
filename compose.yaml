@@ -1,0 +1,23 @@
+# Built from the Unraid template in junkerderprovinz/unraid-apps by
+# .github/gen-compose.py. Change the template there, not this file.
+#
+# Folders are created next to this file on the first start. Point the ones
+# that hold your own files (downloads, storage and the like) at real folders
+# first, and fill in every value marked "required".
+
+services:
+  garage:
+    image: junkerderprovinz/garage:latest
+    container_name: garage
+    restart: unless-stopped
+    ports:
+      - "3900:3900"
+      - "3909:3909"
+      - "3902:3902"
+    volumes:
+      - "./appdata/data:/data"
+      - "./appdata/config:/config"
+    environment:
+      DB_ENGINE: sqlite
+      PUID: "1000"
+      PGID: "1000"
