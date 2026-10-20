@@ -107,7 +107,7 @@ docker run -d --name garage -p 3900:3900 -p 3909:3909 \
   junkerderprovinz/garage:latest
 ```
 
-The log says `GARAGE IS READY` once it is up. The S3 endpoint is `http://<server>:3900` with the region `garage`, and the admin panel is on port 3909. An rclone remote for it looks like this:
+The log says `GARAGE IS READY` once it is up. The S3 endpoint is `http://<server>:3900` with the region `garage`, and the admin panel is on port 3909. If a client only accepts AWS region names, set `S3_REGION` (the S3 Region field on Unraid), for example to `us-east-1`. It is written into `garage.toml` on every start, so there is no need to edit the file. An rclone remote for it looks like this:
 
 ```ini
 [garage]
