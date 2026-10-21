@@ -7,7 +7,7 @@
 
 services:
   garage:
-    image: junkerderprovinz/garage:latest@sha256:22c48812e57e9f7a796118f31d90195f72f800cb4ced3cb336292d59acb682ef
+    image: junkerderprovinz/garage:latest@sha256:2ccb1fa529345ff84738249dc560ff3b9642cfb7932b5724fd0dcb9c6806f6a8
     container_name: garage
     restart: unless-stopped
     ports:
