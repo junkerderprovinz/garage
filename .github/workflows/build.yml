@@ -6,6 +6,8 @@
 #
 # Component versions (Garage, garage-webui, s6-overlay) are pinned in the
 # Dockerfile ARGs and tracked by Renovate.
+# The weekly cron and a manual run build without the layer cache, so latest
+# picks up base image updates.
 
 name: Build & Push Docker Image
 
@@ -21,6 +23,9 @@ on:
   push:
     branches: [main]
     paths-ignore: ['**.md', 'LICENSE', 'templates/**']
+  # Weekly, to rebuild latest on fresh base images and packages.
+  schedule:
+    - cron: '40 7 * * 0'
 
 permissions:
   contents: read
@@ -57,7 +62,7 @@ jobs:
           SKIP="false"
           FORCE="${{ github.event.inputs.force_rebuild }}"
           EVENT="${{ github.event_name }}"
-          if [ "${EVENT}" = "push" ]; then
+          if [ "${EVENT}" = "push" ] || [ "${EVENT}" = "schedule" ]; then
             SKIP="false"
           elif [ "${FORCE}" = "true" ]; then
             SKIP="false"
@@ -125,6 +130,7 @@ jobs:
           load: true
           tags: garage:smoke-amd64
           cache-from: type=gha
+          no-cache: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
 
       - name: "Smoke test: admin API, webui and bucket browsing must work"
         if: steps.check.outputs.skip != 'true'
@@ -163,3 +169,4 @@ jobs:
           tags: ${{ steps.tags.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          no-cache: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
