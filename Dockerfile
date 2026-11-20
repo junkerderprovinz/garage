@@ -12,6 +12,7 @@
 
 ARG GARAGE_VERSION=v2.5.0@sha256:677e5b758e4425a325b811c425c026bf35a4bf42f7ddbaa773de3f4fd779a5a5
 ARG WEBUI_VERSION=latest@sha256:17c793551873155065bf9a022dabcde874de808a1f26e648d4b82e168806439c
+# renovate: datasource=github-releases depName=just-containers/s6-overlay versioning=loose
 ARG S6_OVERLAY_VERSION=3.2.0.2
 
 # The official Garage binary (Deuxfleurs, Rust, scratch-based).
