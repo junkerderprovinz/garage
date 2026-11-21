@@ -46,7 +46,9 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # - ca-certificates, curl: health checks
 # - tzdata:      TZ env var support
 # - xz-utils:    decompress s6-overlay .tar.xz archives
+# The upgrade takes the security fixes published since the base image was built.
 RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
         gosu \
         openssl \
