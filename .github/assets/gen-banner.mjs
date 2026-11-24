@@ -1,7 +1,7 @@
 /**
  * Generates the garage README banners. Text is drawn at the origin and moved into
  * place with <g transform>, because opentype.js emits NaN at large absolute x.
- * The name is set in Bree Serif Light and the claim in Bree Light, read as TTF
+ * The name is set in Bree Serif Regular and the claim in Bree Light, read as TTF
  * from HOUSE_FONTS (default %LOCALAPPDATA%\halleluja-fonts).
  * Run: node .github/assets/gen-banner.mjs
  */
@@ -24,7 +24,7 @@ function font(file) {
   const b = readFileSync(join(fonts, file));
   return opentype.parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength));
 }
-const bree = font("bree-serif-light.ttf");
+const bree = font("bree-serif-regular.ttf");
 const claimFont = font("bree-light.ttf");
 const bbox = (svg) => new Resvg(svg, { fitTo: { mode: "original" } }).getBBox();
 
