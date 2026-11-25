@@ -151,6 +151,6 @@ You do not have to take my word for it. The code is open and every release note 
 
 <br>
 
-Questions? Check the [support thread](https://forums.unraid.net/topic/198811-support-junkerderprovinz-unraid-apps/). Bugs, ideas or feature requests? Please [open a GitHub issue](https://github.com/junkerderprovinz/garage/issues).
+Questions, bugs, ideas or feature requests? Please [open a GitHub issue](https://github.com/junkerderprovinz/garage/issues).
 
 <sub>Garage is made by Deuxfleurs and garage-webui by khairul169; both ship here unmodified under their own licences.</sub>
